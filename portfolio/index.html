@@ -35,20 +35,111 @@
       radial-gradient(ellipse 900px 500px at 15% -10%, rgba(216, 164, 76, 0.08), transparent 60%),
       radial-gradient(ellipse 700px 500px at 100% 10%, rgba(124, 159, 216, 0.06), transparent 60%);
     background-attachment: fixed;
+    position: relative;
   }
 
   a { color: inherit; }
+
+  /* ---------- Accessibility / interaction utilities (ported from cortex-ai-template) ---------- */
+  .skip-link {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    z-index: 200;
+    background: var(--accent);
+    color: #14100a;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 10px 18px;
+    border-radius: 0 0 8px 0;
+    text-decoration: none;
+  }
+  .skip-link:focus {
+    left: 0;
+  }
+
+  :focus-visible {
+    outline: 2px solid #00d4ff;
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+  .glass-strong {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  .glow-cyan {
+    box-shadow: 0 0 20px rgba(0, 212, 255, 0.15), 0 0 60px rgba(0, 212, 255, 0.05);
+  }
+
+  /* Film-grain noise overlay, fixed above the gradient wash, below content */
+  .noise-overlay::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    opacity: 0.015;
+    pointer-events: none;
+    background-repeat: repeat;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* Scroll-reveal: scoped under .js so no-JS visitors always see full content */
+  .js .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  .js .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
 
   .wrap {
     max-width: 980px;
     margin: 0 auto;
     padding: 0 32px;
+    position: relative;
+    z-index: 2;
   }
 
   /* ---------- Header / hero ---------- */
   header.hero {
     padding: 96px 0 72px;
     border-bottom: 1px solid var(--border-soft);
+    position: relative;
+    overflow: hidden;
+  }
+
+  #hero-canvas {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+
+  .hero-content {
+    position: relative;
+    z-index: 1;
   }
 
   .eyebrow {
@@ -103,6 +194,34 @@
     margin: 0 10px;
   }
 
+  /* ---------- Stat strip ---------- */
+  .stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    margin: 44px 0 0;
+    padding: 26px 32px;
+    border-radius: 12px;
+  }
+  .stat {
+    min-width: 130px;
+  }
+  .stat-num {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(26px, 3.2vw, 34px);
+    font-weight: 400;
+    color: var(--accent);
+    line-height: 1.15;
+    margin-bottom: 6px;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-label {
+    font-size: 11.5px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+  }
+
   /* ---------- Section labels ---------- */
   .section {
     padding: 72px 0;
@@ -143,11 +262,17 @@
     padding: 28px 26px 24px;
     display: flex;
     flex-direction: column;
-    transition: border-color 0.2s ease, transform 0.2s ease;
+    transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   }
   .card:hover {
     border-color: #3a3d49;
     transform: translateY(-2px);
+    box-shadow: 0 0 24px rgba(0, 212, 255, 0.08), 0 10px 28px rgba(0, 0, 0, 0.35);
+  }
+  .card.glass {
+    /* layer a faint glass highlight over the existing card color, don't flatten it */
+    background: linear-gradient(155deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0) 45%), var(--bg-card);
+    border-color: var(--border);
   }
 
   .card-index {
@@ -284,23 +409,43 @@
   }
 </style>
 </head>
-<body>
+<body class="noise-overlay">
+
+  <a class="skip-link" href="#main-content">Skip to content</a>
 
   <div class="wrap">
     <header class="hero">
-      <div class="eyebrow">Portfolio</div>
-      <div class="name">Chandu Yeswanth</div>
-      <p class="headline">AI-Augmented Builder — I direct <b>Claude Code</b> (Anthropic's AI coding agent) to architect, design, and ship real software products end-to-end — requirements through system design, build, UAT, and production deploy — without writing code by hand.</p>
-      <p class="hero-sub">4.5+ years in implementation &amp; delivery consulting<span class="divider-dot">&middot;</span>Hyderabad, India<span class="divider-dot">&middot;</span>Bilingual (English + Telugu)</p>
+      <canvas id="hero-canvas" aria-hidden="true"></canvas>
+      <div class="hero-content">
+        <div class="eyebrow">Portfolio</div>
+        <div class="name">Chandu Yeswanth</div>
+        <p class="headline">AI-Augmented Builder — I direct <b>Claude Code</b> (Anthropic's AI coding agent) to architect, design, and ship real software products end-to-end — requirements through system design, build, UAT, and production deploy — without writing code by hand.</p>
+        <p class="hero-sub">4.5+ years in implementation &amp; delivery consulting<span class="divider-dot">&middot;</span>Hyderabad, India<span class="divider-dot">&middot;</span>Bilingual (English + Telugu)</p>
+      </div>
     </header>
 
-    <section class="section">
+    <section class="stats glass-strong" aria-label="Highlights">
+      <div class="stat" aria-label="4 Products Shipped">
+        <div class="stat-num" data-count-to="4" aria-hidden="true">0</div>
+        <div class="stat-label" aria-hidden="true">Products Shipped</div>
+      </div>
+      <div class="stat" aria-label="3 Live Demos">
+        <div class="stat-num" data-count-to="3" aria-hidden="true">0</div>
+        <div class="stat-label" aria-hidden="true">Live Demos</div>
+      </div>
+      <div class="stat" aria-label="100 percent AI-Directed Builds">
+        <div class="stat-num" data-count-to="100" data-suffix="%" aria-hidden="true">0</div>
+        <div class="stat-label" aria-hidden="true">AI-Directed Builds</div>
+      </div>
+    </section>
+
+    <section class="section" id="main-content" tabindex="-1">
       <div class="section-label">Selected Work</div>
       <h2 class="section-title">Four products, built end-to-end</h2>
 
       <div class="projects">
 
-        <div class="card">
+        <div class="card glass">
           <div class="card-index">01</div>
           <h3 class="card-title">PM Simulator</h3>
 
@@ -319,7 +464,7 @@
           </div>
         </div>
 
-        <div class="card">
+        <div class="card glass">
           <div class="card-index">02</div>
           <h3 class="card-title">Sortd — WhatsApp-First Personal Assistant</h3>
 
@@ -337,7 +482,7 @@
           </div>
         </div>
 
-        <div class="card">
+        <div class="card glass">
           <div class="card-index">03</div>
           <h3 class="card-title">Cricket Underworld</h3>
 
@@ -356,7 +501,7 @@
           </div>
         </div>
 
-        <div class="card">
+        <div class="card glass">
           <div class="card-index">04</div>
           <h3 class="card-title">Data Product Discovery &amp; Delivery Assistant</h3>
 
@@ -412,6 +557,306 @@
       <p class="footer-note">Chandu Yeswanth — Hyderabad, Telangana, India. Every product on this page was architected and directed end-to-end using Claude Code.</p>
     </footer>
   </div>
+
+  <script>
+  // Progressive enhancement flag: reveal/no-JS fallback CSS is scoped under .js
+  document.documentElement.classList.add('js');
+
+  /* ---------------------------------------------------------------------
+   * 1. Hero neural constellation canvas
+   *    Mouse-reactive particle field with glow + gradient connections.
+   *    Ported from cortex-ai-template's canvas-based hero effect.
+   * ------------------------------------------------------------------- */
+  (function () {
+    var canvas = document.getElementById('hero-canvas');
+    if (!canvas || !canvas.getContext) return;
+    var ctx = canvas.getContext('2d');
+
+    var reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+    var width = 0, height = 0, dpr = Math.max(1, window.devicePixelRatio || 1);
+    var particles = [];
+    var mouse = { x: -9999, y: -9999, active: false };
+    var mouseRadius = 200;
+    var connectionDistance = 150;
+    var rafId = null;
+    var lastInnerWidth = window.innerWidth;
+
+    function sizeCanvas() {
+      var rect = canvas.getBoundingClientRect();
+      width = rect.width;
+      height = rect.height;
+      dpr = Math.max(1, window.devicePixelRatio || 1);
+      canvas.width = Math.max(1, Math.round(width * dpr));
+      canvas.height = Math.max(1, Math.round(height * dpr));
+      // setTransform (not scale) so repeated resizes never compound the DPR scale
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    function createParticles() {
+      var count = Math.min(Math.floor((width * height) / 12000), 120);
+      particles = [];
+      for (var i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.4,
+          radius: Math.random() * 1.5 + 0.5,
+          opacity: Math.random() * 0.5 + 0.2,
+          pulseSpeed: Math.random() * 0.02 + 0.01,
+          pulsePhase: Math.random() * Math.PI * 2
+        });
+      }
+    }
+
+    function onMouseMove(e) {
+      var rect = canvas.getBoundingClientRect();
+      mouse.x = e.clientX - rect.left;
+      mouse.y = e.clientY - rect.top;
+      mouse.active = mouse.x >= 0 && mouse.x <= width && mouse.y >= 0 && mouse.y <= height;
+    }
+    function onMouseLeave() {
+      mouse.active = false;
+      mouse.x = -9999;
+      mouse.y = -9999;
+    }
+
+    function onResize() {
+      var widthChanged = window.innerWidth !== lastInnerWidth;
+      sizeCanvas();
+      if (widthChanged) {
+        lastInnerWidth = window.innerWidth;
+        createParticles();
+      }
+      if (reduceMotion) drawStaticFrame();
+    }
+
+    function drawConnections(time) {
+      for (var a = 0; a < particles.length; a++) {
+        for (var b = a + 1; b < particles.length; b++) {
+          var p1 = particles[a], p2 = particles[b];
+          var ddx = p1.x - p2.x, ddy = p1.y - p2.y;
+          var d = Math.sqrt(ddx * ddx + ddy * ddy);
+          if (d >= connectionDistance) continue;
+
+          var opacity = (1 - d / connectionDistance) * 0.15;
+
+          if (typeof time !== 'undefined') {
+            var midX = (p1.x + p2.x) / 2, midY = (p1.y + p2.y) / 2;
+            var mDist = mouse.active
+              ? Math.sqrt(Math.pow(mouse.x - midX, 2) + Math.pow(mouse.y - midY, 2))
+              : Infinity;
+            var mouseBoost = mDist < mouseRadius ? (1 - mDist / mouseRadius) * 0.3 : 0;
+            opacity += mouseBoost;
+          }
+
+          var gradient = ctx.createLinearGradient(p1.x, p1.y, p2.x, p2.y);
+          gradient.addColorStop(0, 'rgba(0,212,255,' + opacity + ')');
+          gradient.addColorStop(0.5, 'rgba(168,85,247,' + opacity + ')');
+          gradient.addColorStop(1, 'rgba(59,130,246,' + opacity + ')');
+
+          ctx.strokeStyle = gradient;
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(p1.x, p1.y);
+          ctx.lineTo(p2.x, p2.y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    function drawParticles(time) {
+      for (var j = 0; j < particles.length; j++) {
+        var p = particles[j];
+        var pulse = typeof time !== 'undefined'
+          ? Math.sin(time * p.pulseSpeed + p.pulsePhase) * 0.3 + 0.7
+          : 1;
+
+        var mouseGlow = 0;
+        if (mouse.active) {
+          var dxm = mouse.x - p.x, dym = mouse.y - p.y;
+          var distm = Math.sqrt(dxm * dxm + dym * dym);
+          mouseGlow = distm < mouseRadius ? (1 - distm / mouseRadius) : 0;
+        }
+        var glowRadius = p.radius * (3 + mouseGlow * 6);
+        var glowOpacity = p.opacity * pulse;
+
+        var glow = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowRadius);
+        glow.addColorStop(0, 'rgba(0,212,255,' + (glowOpacity * 0.8) + ')');
+        glow.addColorStop(0.5, 'rgba(168,85,247,' + (glowOpacity * 0.3) + ')');
+        glow.addColorStop(1, 'rgba(0,212,255,0)');
+        ctx.fillStyle = glow;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, glowRadius, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = 'rgba(230,240,255,' + glowOpacity + ')';
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    function step(time) {
+      ctx.clearRect(0, 0, width, height);
+
+      for (var i = 0; i < particles.length; i++) {
+        var p = particles[i];
+
+        if (mouse.active) {
+          var dx = mouse.x - p.x, dy = mouse.y - p.y;
+          var dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < mouseRadius && dist > 0.01) {
+            var force = (1 - dist / mouseRadius) * 0.02;
+            p.vx += (dx / dist) * force;
+            p.vy += (dy / dist) * force;
+          }
+        }
+
+        p.vx *= 0.99;
+        p.vy *= 0.99;
+        var speed = Math.sqrt(p.vx * p.vx + p.vy * p.vy);
+        if (speed > 1.5) {
+          p.vx = (p.vx / speed) * 1.5;
+          p.vy = (p.vy / speed) * 1.5;
+        }
+
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if (p.x < 0) p.x = width;
+        if (p.x > width) p.x = 0;
+        if (p.y < 0) p.y = height;
+        if (p.y > height) p.y = 0;
+      }
+
+      drawConnections(time);
+      drawParticles(time);
+
+      rafId = requestAnimationFrame(step);
+    }
+
+    function drawStaticFrame() {
+      ctx.clearRect(0, 0, width, height);
+      drawConnections();
+      drawParticles();
+    }
+
+    function init() {
+      sizeCanvas();
+      createParticles();
+      if (reduceMotion) {
+        drawStaticFrame();
+      } else {
+        rafId = requestAnimationFrame(step);
+      }
+    }
+
+    window.addEventListener('mousemove', onMouseMove, { passive: true });
+    window.addEventListener('mouseleave', onMouseLeave, { passive: true });
+    window.addEventListener('resize', onResize, { passive: true });
+    window.addEventListener('pagehide', function () {
+      if (rafId) cancelAnimationFrame(rafId);
+      window.removeEventListener('mousemove', onMouseMove);
+      window.removeEventListener('mouseleave', onMouseLeave);
+      window.removeEventListener('resize', onResize);
+    });
+
+    init();
+  })();
+
+  /* ---------------------------------------------------------------------
+   * 2. Scroll-triggered staggered reveal for project cards + method steps
+   * ------------------------------------------------------------------- */
+  (function () {
+    var reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+
+    var groups = [
+      Array.prototype.slice.call(document.querySelectorAll('.projects .card')),
+      Array.prototype.slice.call(document.querySelectorAll('.method .method-item'))
+    ];
+
+    var allRevealEls = [];
+    groups.forEach(function (group) {
+      group.forEach(function (el, idx) {
+        el.classList.add('reveal');
+        el.style.transitionDelay = (idx * 80) + 'ms';
+        allRevealEls.push(el);
+      });
+    });
+
+    if (!allRevealEls.length) return;
+
+    if (reduceMotion || !('IntersectionObserver' in window)) {
+      allRevealEls.forEach(function (el) { el.classList.add('is-visible'); });
+      return;
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('is-visible');
+          io.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    allRevealEls.forEach(function (el) { io.observe(el); });
+  })();
+
+  /* ---------------------------------------------------------------------
+   * 3. Animated stat strip — count-up on scroll via rAF easing
+   * ------------------------------------------------------------------- */
+  (function () {
+    var reduceMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    var statEls = Array.prototype.slice.call(document.querySelectorAll('.stat-num'));
+    if (!statEls.length) return;
+
+    function animateCount(el) {
+      var target = parseFloat(el.getAttribute('data-count-to'));
+      var suffix = el.getAttribute('data-suffix') || '';
+      if (isNaN(target)) return;
+
+      if (reduceMotion) {
+        el.textContent = target + suffix;
+        return;
+      }
+
+      var duration = 1200;
+      var start = null;
+
+      function tick(ts) {
+        if (start === null) start = ts;
+        var progress = Math.min((ts - start) / duration, 1);
+        var eased = 1 - Math.pow(1 - progress, 3);
+        el.textContent = Math.round(target * eased) + suffix;
+        if (progress < 1) {
+          requestAnimationFrame(tick);
+        } else {
+          el.textContent = target + suffix;
+        }
+      }
+      requestAnimationFrame(tick);
+    }
+
+    if (!('IntersectionObserver' in window)) {
+      statEls.forEach(animateCount);
+      return;
+    }
+
+    var statIo = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          animateCount(entry.target);
+          statIo.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+
+    statEls.forEach(function (el) { statIo.observe(el); });
+  })();
+  </script>
 
 </body>
 </html>
