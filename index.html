@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Steal Deals Hub — Handpicked Amazon India Deals, 50%+ Off</title>
+<meta name="description" content="Handpicked fashion, beauty and lifestyle deals from Amazon India — minimum 50% off, refreshed through the day.">
+<style>
+  :root{
+    --bg:#0c0a09; --panel:#171310; --panel2:#1f1915; --line:#2e2620;
+    --flame:#ff7a1a; --flame2:#ffb347; --ink:#f5efe8; --muted:#a89a8c;
+    --green:#4ade80; --strike:#7d7066;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:var(--bg);color:var(--ink);font-family:'Segoe UI',system-ui,-apple-system,sans-serif;min-height:100vh}
+  body::before{content:"";position:fixed;inset:0;background:
+    radial-gradient(600px 300px at 85% -5%,rgba(255,122,26,.14),transparent 60%),
+    radial-gradient(500px 260px at 5% 0%,rgba(255,179,71,.08),transparent 60%);pointer-events:none}
+  header{position:sticky;top:0;z-index:20;background:rgba(12,10,9,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+  .hwrap{max-width:1100px;margin:0 auto;padding:14px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:1.15rem;letter-spacing:.4px}
+  .logo .bolt{width:34px;height:34px;border-radius:9px;display:grid;place-items:center;
+    background:linear-gradient(135deg,var(--flame),var(--flame2));color:#1a1006;font-size:1.1rem}
+  .logo em{font-style:normal;background:linear-gradient(90deg,var(--flame),var(--flame2));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .updated{margin-left:auto;font-size:.78rem;color:var(--muted)}
+  .updated b{color:var(--flame2);font-weight:600}
+  .disclose{background:linear-gradient(90deg,rgba(255,122,26,.10),rgba(255,179,71,.05));border-bottom:1px solid var(--line);
+    font-size:.75rem;color:var(--muted);text-align:center;padding:7px 16px}
+  main{max-width:1100px;margin:0 auto;padding:22px 18px 60px}
+  .chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:22px}
+  .chip{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:7px 16px;border-radius:999px;
+    font-size:.82rem;cursor:pointer;transition:.15s;user-select:none}
+  .chip:hover{border-color:var(--flame);color:var(--ink)}
+  .chip.on{background:linear-gradient(135deg,var(--flame),var(--flame2));color:#1a1006;border-color:transparent;font-weight:700}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;
+    transition:transform .15s,border-color .15s,box-shadow .15s;position:relative}
+  .card:hover{transform:translateY(-3px);border-color:#4a3b2d;box-shadow:0 12px 30px rgba(0,0,0,.45)}
+  .card.hot{border-color:var(--flame);box-shadow:0 0 0 1px var(--flame),0 14px 36px rgba(255,122,26,.25);animation:pulse 1.6s ease-in-out 3}
+  @keyframes pulse{50%{box-shadow:0 0 0 3px var(--flame),0 14px 36px rgba(255,122,26,.4)}}
+  .imgbox{background:#fff;height:190px;display:grid;place-items:center;position:relative}
+  .imgbox img{max-width:88%;max-height:88%;object-fit:contain}
+  .badge{position:absolute;top:10px;left:10px;background:linear-gradient(135deg,var(--flame),#e5470b);color:#fff;
+    font-weight:800;font-size:.85rem;padding:5px 10px;border-radius:8px;box-shadow:0 4px 12px rgba(229,71,11,.5)}
+  .cat{position:absolute;top:10px;right:10px;background:rgba(12,10,9,.82);color:var(--flame2);font-size:.68rem;
+    padding:4px 9px;border-radius:6px;letter-spacing:.5px;text-transform:uppercase;font-weight:600}
+  .body{padding:14px;display:flex;flex-direction:column;gap:9px;flex:1}
+  .title{font-size:.86rem;line-height:1.4;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;min-height:2.4em}
+  .prices{display:flex;align-items:baseline;gap:9px;flex-wrap:wrap}
+  .now{font-size:1.25rem;font-weight:800;color:var(--ink)}
+  .was{color:var(--strike);text-decoration:line-through;font-size:.85rem}
+  .save{color:var(--green);font-size:.78rem;font-weight:600}
+  .meta{display:flex;justify-content:space-between;align-items:center;font-size:.74rem;color:var(--muted)}
+  .stars{color:var(--flame2)}
+  .btn{margin-top:auto;display:block;text-align:center;text-decoration:none;padding:11px;border-radius:10px;font-weight:800;font-size:.9rem;
+    background:linear-gradient(135deg,var(--flame),var(--flame2));color:#1a1006;transition:filter .15s}
+  .btn:hover{filter:brightness(1.12)}
+  .asof{font-size:.65rem;color:var(--strike);text-align:center;padding-bottom:10px}
+  .empty,.loading{text-align:center;color:var(--muted);padding:80px 20px;font-size:.95rem}
+  .spin{width:34px;height:34px;border:3px solid var(--line);border-top-color:var(--flame);border-radius:50%;margin:0 auto 16px;animation:rot 1s linear infinite}
+  @keyframes rot{to{transform:rotate(360deg)}}
+  footer{border-top:1px solid var(--line);color:var(--muted);font-size:.74rem;line-height:1.7;padding:24px 18px;text-align:center}
+  footer a{color:var(--flame2);text-decoration:none}
+  .tg{display:inline-block;margin-top:8px;padding:8px 18px;border:1px solid var(--flame);border-radius:999px;color:var(--flame2);text-decoration:none;font-size:.8rem}
+  .tg:hover{background:rgba(255,122,26,.12)}
+</style>
+</head>
+<body>
+<header>
+  <div class="hwrap">
+    <div class="logo"><span class="bolt">⚡</span><span>STEAL <em>DEALS</em> HUB</span></div>
+    <div class="updated" id="updated"></div>
+  </div>
+</header>
+<div class="disclose">As an Amazon Associate, Steal Deals Hub earns from qualifying purchases. Prices shown were captured at the listed time and may have changed — the price on Amazon at checkout applies.</div>
+<main>
+  <div class="chips" id="chips"></div>
+  <div id="content"><div class="loading"><div class="spin"></div>Loading today's steals…</div></div>
+</main>
+<footer>
+  <div><b>Steal Deals Hub</b> — handpicked Amazon India deals at 50%+ off, refreshed through the day.</div>
+  <div>As an Amazon Associate, we earn from qualifying purchases. Product prices and availability are accurate as of the date/time indicated and are subject to change.</div>
+  <a class="tg" href="https://t.me/steal_deals_hub" target="_blank" rel="noopener">📣 Get deals on Telegram → @steal_deals_hub</a>
+</footer>
+<script>
+(async function(){
+  const content=document.getElementById('content'), chipsEl=document.getElementById('chips');
+  let deals=[], updated='', activeCat='All';
+  try{
+    const res=await fetch('deals.json?t='+Date.now());
+    const data=await res.json();
+    deals=data.deals||[]; updated=data.updated||'';
+  }catch(e){ content.innerHTML='<div class="empty">Could not load deals. Refresh in a minute.</div>'; return; }
+  if(updated){
+    const d=new Date(updated);
+    document.getElementById('updated').innerHTML='Updated <b>'+d.toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hour12:true})+' IST</b>';
+  }
+  const cats=['All',...new Set(deals.map(d=>d.category))];
+  chipsEl.innerHTML=cats.map(c=>'<span class="chip'+(c===activeCat?' on':'')+'" data-c="'+c+'">'+c+'</span>').join('');
+  chipsEl.addEventListener('click',e=>{
+    const c=e.target.closest('.chip'); if(!c)return;
+    activeCat=c.dataset.c;
+    chipsEl.querySelectorAll('.chip').forEach(x=>x.classList.toggle('on',x.dataset.c===activeCat));
+    render();
+  });
+  function inr(n){return '₹'+Math.round(n).toLocaleString('en-IN')}
+  function asofStr(iso){
+    if(!iso)return'';
+    return new Date(iso).toLocaleString('en-IN',{timeZone:'Asia/Kolkata',day:'numeric',month:'short',hour:'2-digit',minute:'2-digit',hour12:true})+' IST';
+  }
+  function render(){
+    const list=activeCat==='All'?deals:deals.filter(d=>d.category===activeCat);
+    if(!list.length){content.innerHTML='<div class="empty">No live deals in this category right now — check back soon.</div>';return;}
+    content.innerHTML='<div class="grid">'+list.map(d=>{
+      const save=d.original_price>d.sale_price?'<span class="save">save '+inr(d.original_price-d.sale_price)+'</span>':'';
+      const was=d.original_price>d.sale_price?'<span class="was">'+inr(d.original_price)+'</span>':'';
+      const stars=d.rating?'<span class="stars">★ '+String(d.rating).split(' ')[0]+'</span>'+(d.rating_count?' <span>('+d.rating_count+')</span>':''):'<span></span>';
+      const img=d.image_url?'<img loading="lazy" src="'+d.image_url+'" alt="">':'';
+      return '<div class="card" id="deal-'+d.asin+'">'+
+        '<div class="imgbox">'+img+'<span class="badge">'+d.discount+'% OFF</span><span class="cat">'+d.category+'</span></div>'+
+        '<div class="body">'+
+          '<div class="title">'+d.title+'</div>'+
+          '<div class="prices"><span class="now">'+inr(d.sale_price)+'</span>'+was+save+'</div>'+
+          '<div class="meta">'+stars+'</div>'+
+          '<a class="btn" href="'+d.url+'" target="_blank" rel="sponsored nofollow noopener">Grab Deal on Amazon →</a>'+
+        '</div>'+
+        '<div class="asof">price as of '+asofStr(d.added||updated)+'</div>'+
+      '</div>';
+    }).join('')+'</div>';
+    highlight();
+  }
+  function highlight(){
+    const h=location.hash.replace('#','');
+    if(!h)return;
+    const el=document.getElementById(h);
+    if(el){el.classList.add('hot');setTimeout(()=>el.scrollIntoView({behavior:'smooth',block:'center'}),150);}
+  }
+  window.addEventListener('hashchange',()=>{document.querySelectorAll('.card.hot').forEach(c=>c.classList.remove('hot'));highlight();});
+  render();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chandu Yeswanth — AI-Augmented Builder</title>
+<meta name="description" content="Portfolio of products architected and directed end-to-end with Claude Code — requirements through production deploy.">
+<style>
+  :root {
+    --bg: #0b0c10;
+    --bg-raised: #14161c;
+    --bg-card: #15171e;
+    --border: #262933;
+    --border-soft: #1e2028;
+    --ink: #ecebe6;
+    --ink-dim: #9a9ba3;
+    --ink-faint: #66676f;
+    --accent: #d8a44c;
+    --accent-soft: rgba(216, 164, 76, 0.14);
+    --live: #6fb98f;
+    --code: #7c9fd8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: -apple-system, "Segoe UI", Calibri, Roboto, Arial, sans-serif;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    background-image:
+      radial-gradient(ellipse 900px 500px at 15% -10%, rgba(216, 164, 76, 0.08), transparent 60%),
+      radial-gradient(ellipse 700px 500px at 100% 10%, rgba(124, 159, 216, 0.06), transparent 60%);
+    background-attachment: fixed;
+  }
+
+  a { color: inherit; }
+
+  .wrap {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  /* ---------- Header / hero ---------- */
+  header.hero {
+    padding: 96px 0 72px;
+    border-bottom: 1px solid var(--border-soft);
+  }
+
+  .eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11.5px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 600;
+    margin-bottom: 28px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 26px;
+    height: 1px;
+    background: var(--accent);
+    display: inline-block;
+  }
+
+  .name {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(30px, 4.2vw, 44px);
+    font-weight: 400;
+    letter-spacing: 0.3px;
+    color: var(--ink);
+    margin-bottom: 22px;
+  }
+
+  .headline {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(20px, 2.6vw, 27px);
+    line-height: 1.5;
+    font-weight: 400;
+    color: #f3f1ea;
+    max-width: 860px;
+    margin-bottom: 30px;
+  }
+  .headline b, .headline strong {
+    color: var(--accent);
+    font-weight: 600;
+  }
+
+  .hero-sub {
+    font-size: 14.5px;
+    color: var(--ink-dim);
+    max-width: 720px;
+  }
+  .hero-sub .divider-dot {
+    color: var(--ink-faint);
+    margin: 0 10px;
+  }
+
+  /* ---------- Section labels ---------- */
+  .section {
+    padding: 72px 0;
+    border-bottom: 1px solid var(--border-soft);
+  }
+  .section:last-of-type { border-bottom: none; }
+
+  .section-label {
+    font-size: 11.5px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    font-weight: 600;
+    margin-bottom: 8px;
+  }
+  .section-title {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--ink);
+    margin-bottom: 40px;
+  }
+
+  /* ---------- Project cards ---------- */
+  .projects {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 22px;
+  }
+  @media (max-width: 760px) {
+    .projects { grid-template-columns: 1fr; }
+  }
+
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 28px 26px 24px;
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .card:hover {
+    border-color: #3a3d49;
+    transform: translateY(-2px);
+  }
+
+  .card-index {
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    letter-spacing: 1.5px;
+    font-weight: 600;
+    margin-bottom: 10px;
+  }
+
+  .card-title {
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 20px;
+    color: var(--ink);
+    margin-bottom: 12px;
+    line-height: 1.3;
+  }
+
+  .card-block-label {
+    font-size: 10.5px;
+    letter-spacing: 1.4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 4px;
+    margin-top: 14px;
+  }
+  .card-block-label:first-of-type { margin-top: 2px; }
+
+  .card-text {
+    font-size: 13.5px;
+    color: var(--ink-dim);
+    line-height: 1.55;
+  }
+
+  .card-links {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 999px;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: opacity 0.15s ease;
+  }
+  .pill:hover { opacity: 0.82; }
+  .pill-live {
+    background: rgba(111, 185, 143, 0.12);
+    color: var(--live);
+    border-color: rgba(111, 185, 143, 0.35);
+  }
+  .pill-code {
+    background: rgba(124, 159, 216, 0.12);
+    color: var(--code);
+    border-color: rgba(124, 159, 216, 0.35);
+  }
+  .pill::after {
+    content: "↗";
+    font-size: 11px;
+  }
+
+  /* ---------- How it works strip ---------- */
+  .method {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+  @media (max-width: 760px) {
+    .method { grid-template-columns: 1fr; }
+  }
+  .method-item {
+    padding: 20px 0 0;
+    border-top: 1px solid var(--border-soft);
+  }
+  .method-num {
+    font-family: Georgia, serif;
+    font-size: 15px;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+  .method-title {
+    font-size: 14.5px;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 6px;
+  }
+  .method-text {
+    font-size: 13px;
+    color: var(--ink-dim);
+    line-height: 1.55;
+  }
+
+  /* ---------- Footer ---------- */
+  footer {
+    padding: 56px 0 80px;
+  }
+  .footer-title {
+    font-family: Georgia, serif;
+    font-size: 20px;
+    color: var(--ink);
+    margin-bottom: 18px;
+  }
+  .footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 28px;
+    font-size: 14px;
+    color: var(--ink-dim);
+    margin-bottom: 28px;
+  }
+  .footer-links a {
+    text-decoration: none;
+    color: var(--ink-dim);
+    border-bottom: 1px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .footer-links a:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+  }
+  .footer-note {
+    font-size: 12px;
+    color: var(--ink-faint);
+    max-width: 640px;
+  }
+</style>
+</head>
+<body>
+
+  <div class="wrap">
+    <header class="hero">
+      <div class="eyebrow">Portfolio</div>
+      <div class="name">Chandu Yeswanth</div>
+      <p class="headline">AI-Augmented Builder — I direct <b>Claude Code</b> (Anthropic's AI coding agent) to architect, design, and ship real software products end-to-end — requirements through system design, build, UAT, and production deploy — without writing code by hand.</p>
+      <p class="hero-sub">4.5+ years in implementation &amp; delivery consulting<span class="divider-dot">&middot;</span>Hyderabad, India<span class="divider-dot">&middot;</span>Bilingual (English + Telugu)</p>
+    </header>
+
+    <section class="section">
+      <div class="section-label">Selected Work</div>
+      <h2 class="section-title">Four products, built end-to-end</h2>
+
+      <div class="projects">
+
+        <div class="card">
+          <div class="card-index">01</div>
+          <h3 class="card-title">Data Product Discovery &amp; Delivery Assistant</h3>
+
+          <div class="card-block-label">Problem Solved</div>
+          <p class="card-text">BAs/analysts lose traceability between stakeholder conversations and delivery. This tool structures unstructured discovery conversations into a traceable chain — Business Objectives → KPIs → Data Requirements → Epics/Stories — with change-impact analysis.</p>
+
+          <div class="card-block-label">Role</div>
+          <p class="card-text">Architected &amp; directed build using Claude Code.</p>
+
+          <div class="card-block-label">Stack</div>
+          <p class="card-text">Product/solution design, AI-assisted prototyping, requirement traceability, deployed on Vercel.</p>
+
+          <div class="card-links">
+            <a class="pill pill-live" href="https://frontend-one-chi-43.vercel.app" target="_blank" rel="noopener">Live Demo</a>
+            <a class="pill pill-code" href="https://github.com/chandu45-droid/data-product-assistant" target="_blank" rel="noopener">Code</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-index">02</div>
+          <h3 class="card-title">Sortd — WhatsApp-First Personal Assistant</h3>
+
+          <div class="card-block-label">Problem Solved</div>
+          <p class="card-text">India's 500M+ WhatsApp users have no native, WhatsApp-first personal task/assistant tool. Sortd is a scoped, architected solution: a 2-layer intent parser with AI fallback, Hinglish support, and 100+ India-specific categorization rules.</p>
+
+          <div class="card-block-label">Role</div>
+          <p class="card-text">Architected &amp; directed build using Claude Code.</p>
+
+          <div class="card-block-label">Stack</div>
+          <p class="card-text">Product scoping, user research, AI-assisted build, India market focus.</p>
+
+          <div class="card-links">
+            <a class="pill pill-code" href="https://github.com/chandu45-droid/sortd" target="_blank" rel="noopener">Code</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-index">03</div>
+          <h3 class="card-title">PM Simulator</h3>
+
+          <div class="card-block-label">Problem Solved</div>
+          <p class="card-text">Aspiring/early PMs have no low-stakes way to practice real product-manager decision tradeoffs. This is a daily decision-making simulation game with a share loop.</p>
+
+          <div class="card-block-label">Role</div>
+          <p class="card-text">Architected &amp; directed build using Claude Code.</p>
+
+          <div class="card-block-label">Stack</div>
+          <p class="card-text">HTML/JS game loop, daily-beat design, GitHub Pages deploy.</p>
+
+          <div class="card-links">
+            <a class="pill pill-live" href="https://chandu45-droid.github.io/chandu-workspace/pm-simulator/" target="_blank" rel="noopener">Live Demo</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-index">04</div>
+          <h3 class="card-title">Cricket Underworld</h3>
+
+          <div class="card-block-label">Problem Solved</div>
+          <p class="card-text">Cricket-fan mobile gamers in India want IPL-style strategy depth — auction, squad building, match sim — without reflex-based gameplay. This is a strategy-first card game built for that audience.</p>
+
+          <div class="card-block-label">Role</div>
+          <p class="card-text">Architected &amp; directed build using Claude Code.</p>
+
+          <div class="card-block-label">Stack</div>
+          <p class="card-text">HTML5/PWA, single-file vanilla JS architecture, Playwright test suite.</p>
+
+          <div class="card-links">
+            <a class="pill pill-live" href="https://chandu45-droid.github.io/cricket-underworld/" target="_blank" rel="noopener">Live Demo</a>
+            <a class="pill pill-code" href="https://github.com/chandu45-droid/cricket-underworld" target="_blank" rel="noopener">Code</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-label">How I Build</div>
+      <h2 class="section-title">The AI-augmented delivery practice</h2>
+
+      <div class="method">
+        <div class="method-item">
+          <div class="method-num">I.</div>
+          <div class="method-title">Direct, don't code</div>
+          <p class="method-text">I bring requirements, system design, and product judgment. Claude Code writes and ships every line — I architect and direct the build, review, and iterate.</p>
+        </div>
+        <div class="method-item">
+          <div class="method-num">II.</div>
+          <div class="method-title">Requirements through deploy</div>
+          <p class="method-text">Discovery, solution design, configuration/build, UAT, and production go-live — the same end-to-end delivery discipline I apply in client implementation work.</p>
+        </div>
+        <div class="method-item">
+          <div class="method-num">III.</div>
+          <div class="method-title">Real, shipped products</div>
+          <p class="method-text">Every project above is live or has a working public repo — no mockups, no slideware.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="footer-title">Get in touch</div>
+      <div class="footer-links">
+        <a href="mailto:chanduyeswanth45@gmail.com">chanduyeswanth45@gmail.com</a>
+        <a href="tel:+919392320383">+91 9392320383</a>
+        <a href="https://linkedin.com/in/karri-yeswanth" target="_blank" rel="noopener">LinkedIn</a>
+        <a href="https://github.com/chandu45-droid" target="_blank" rel="noopener">GitHub</a>
+      </div>
+      <p class="footer-note">Chandu Yeswanth — Hyderabad, Telangana, India. Every product on this page was architected and directed end-to-end using Claude Code.</p>
+    </footer>
+  </div>
+
+</body>
+</html>
