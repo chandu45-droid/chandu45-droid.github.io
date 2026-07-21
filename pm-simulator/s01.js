@@ -110,7 +110,7 @@ var MISSED_CLAUSES = {
   A11:'the basket histogram — the one chart that explains an AOV <em>rise</em> during an order collapse without flattering it'
 };
 
-var SHARE_URL = 'https://chandu45-droid.github.io/chandu-workspace/pm-simulator/';
+var SHARE_URL = 'https://chandu45-droid.github.io/pm-simulator/';
 
 function revealBody(id, idx){
   var t1 = TIMES[idx+1];
