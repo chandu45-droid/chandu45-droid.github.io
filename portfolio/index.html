@@ -245,17 +245,56 @@
     margin-bottom: 40px;
   }
 
+  /* ---------- Filter tabs ---------- */
+  .filter-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 24px;
+  }
+  .filter-tab {
+    font-family: inherit;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--ink-dim);
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    padding: 7px 16px;
+    cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
+  }
+  .filter-tab:hover {
+    color: var(--ink);
+    border-color: #3a3d49;
+  }
+  .filter-tab.is-active {
+    color: #14100a;
+    background: var(--accent);
+    border-color: var(--accent);
+  }
+  .card-hidden {
+    display: none;
+  }
+
   /* ---------- Project cards ---------- */
   .projects {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 22px;
   }
+  /* Bento: PM Simulator (card 01) spans the full row on desktop */
+  .card-featured {
+    grid-column: span 2;
+  }
   @media (max-width: 760px) {
     .projects { grid-template-columns: 1fr; }
+    .card-featured { grid-column: span 1; }
   }
 
   .card {
+    position: relative;
+    isolation: isolate;
     background: var(--bg-card);
     border: 1px solid var(--border);
     border-radius: 10px;
@@ -265,9 +304,51 @@
     transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
   }
   .card:hover {
-    border-color: #3a3d49;
     transform: translateY(-2px);
     box-shadow: 0 0 24px rgba(0, 212, 255, 0.08), 0 10px 28px rgba(0, 0, 0, 0.35);
+  }
+
+  /* Cursor-spotlight glow: --mx/--my set via mousemove JS listener per card */
+  .card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    background: radial-gradient(circle 260px at var(--mx, 50%) var(--my, 50%), rgba(216, 164, 76, 0.14), transparent 70%);
+    pointer-events: none;
+  }
+  .card:hover::before {
+    opacity: 1;
+  }
+
+  /* Animated amber -> cyan gradient-sweep border ring, masked down to a 1px ring */
+  .card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(120deg, var(--accent), #00d4ff, var(--accent));
+    background-size: 220% 220%;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.25s ease;
+    pointer-events: none;
+  }
+  .card:hover::after {
+    opacity: 1;
+    animation: card-border-sweep 3s ease infinite;
+  }
+  @keyframes card-border-sweep {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
   .card.glass {
     /* layer a faint glass highlight over the existing card color, don't flatten it */
@@ -341,6 +422,31 @@
   .pill::after {
     content: "↗";
     font-size: 11px;
+    display: inline-block;
+    transition: transform 0.15s ease;
+  }
+  .pill:hover::after {
+    transform: translate(2px, -2px);
+  }
+
+  /* ---------- Tech-stack chips ---------- */
+  .chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 10px;
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-faint);
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-soft);
+    border-radius: 6px;
+    padding: 3px 9px;
+    line-height: 1.4;
   }
 
   /* ---------- How it works strip ---------- */
@@ -393,6 +499,9 @@
     margin-bottom: 28px;
   }
   .footer-links a {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
     text-decoration: none;
     color: var(--ink-dim);
     border-bottom: 1px solid transparent;
@@ -401,6 +510,19 @@
   .footer-links a:hover {
     color: var(--accent);
     border-color: var(--accent);
+    text-shadow: 0 0 10px rgba(216, 164, 76, 0.4);
+  }
+  .footer-icon {
+    display: inline-flex;
+    color: var(--ink-faint);
+    transition: color 0.15s ease, filter 0.15s ease;
+  }
+  .footer-icon svg {
+    display: block;
+  }
+  .footer-links a:hover .footer-icon {
+    color: var(--accent);
+    filter: drop-shadow(0 0 4px rgba(216, 164, 76, 0.6));
   }
   .footer-note {
     font-size: 12px;
@@ -443,9 +565,15 @@
       <div class="section-label">Selected Work</div>
       <h2 class="section-title">Four products, built end-to-end</h2>
 
+      <div class="filter-tabs" role="group" aria-label="Filter projects by type">
+        <button type="button" class="filter-tab is-active" data-filter="all" aria-pressed="true">All</button>
+        <button type="button" class="filter-tab" data-filter="live" aria-pressed="false">Live Demo</button>
+        <button type="button" class="filter-tab" data-filter="code" aria-pressed="false">Code Only</button>
+      </div>
+
       <div class="projects">
 
-        <div class="card glass">
+        <div class="card glass card-featured">
           <div class="card-index">01</div>
           <h3 class="card-title">PM Simulator</h3>
 
@@ -457,6 +585,11 @@
 
           <div class="card-block-label">Stack</div>
           <p class="card-text">HTML/JS game loop, daily-beat design, GitHub Pages deploy.</p>
+          <div class="chip-row">
+            <span class="chip">HTML/JS</span>
+            <span class="chip">Daily-Beat Design</span>
+            <span class="chip">GitHub Pages</span>
+          </div>
 
           <div class="card-links">
             <a class="pill pill-live" href="https://chandu45-droid.github.io/pm-simulator/" target="_blank" rel="noopener">Live Demo</a>
@@ -476,6 +609,12 @@
 
           <div class="card-block-label">Stack</div>
           <p class="card-text">Product scoping, user research, AI-assisted build, India market focus.</p>
+          <div class="chip-row">
+            <span class="chip">Product Scoping</span>
+            <span class="chip">User Research</span>
+            <span class="chip">AI-Assisted Build</span>
+            <span class="chip">India Market Focus</span>
+          </div>
 
           <div class="card-links">
             <a class="pill pill-code" href="https://github.com/chandu45-droid/sortd" target="_blank" rel="noopener">Code</a>
@@ -494,6 +633,11 @@
 
           <div class="card-block-label">Stack</div>
           <p class="card-text">HTML5/PWA, single-file vanilla JS architecture, Playwright test suite.</p>
+          <div class="chip-row">
+            <span class="chip">HTML5/PWA</span>
+            <span class="chip">Vanilla JS</span>
+            <span class="chip">Playwright</span>
+          </div>
 
           <div class="card-links">
             <a class="pill pill-live" href="https://chandu45-droid.github.io/cricket-underworld/" target="_blank" rel="noopener">Live Demo</a>
@@ -513,6 +657,12 @@
 
           <div class="card-block-label">Stack</div>
           <p class="card-text">Product/solution design, AI-assisted prototyping, requirement traceability, deployed on Vercel.</p>
+          <div class="chip-row">
+            <span class="chip">Product/Solution Design</span>
+            <span class="chip">AI-Assisted Prototyping</span>
+            <span class="chip">Requirement Traceability</span>
+            <span class="chip">Vercel</span>
+          </div>
 
           <div class="card-links">
             <a class="pill pill-live" href="https://frontend-one-chi-43.vercel.app" target="_blank" rel="noopener">Live Demo</a>
@@ -549,10 +699,10 @@
     <footer>
       <div class="footer-title">Get in touch</div>
       <div class="footer-links">
-        <a href="mailto:chanduyeswanth45@gmail.com">chanduyeswanth45@gmail.com</a>
-        <a href="tel:+919392320383">+91 9392320383</a>
-        <a href="https://linkedin.com/in/karri-yeswanth" target="_blank" rel="noopener">LinkedIn</a>
-        <a href="https://github.com/chandu45-droid" target="_blank" rel="noopener">GitHub</a>
+        <a href="mailto:chanduyeswanth45@gmail.com"><span class="footer-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M4 7L12 13L20 7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>chanduyeswanth45@gmail.com</a>
+        <a href="tel:+919392320383"><span class="footer-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14"><rect x="7" y="2" width="10" height="20" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"/><line x1="10" y1="18" x2="14" y2="18" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>+91 9392320383</a>
+        <a href="https://linkedin.com/in/karri-yeswanth" target="_blank" rel="noopener"><span class="footer-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14"><rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="currentColor" stroke-width="1.6"/><text x="12" y="16.5" font-size="10" font-weight="700" fill="currentColor" stroke="none" text-anchor="middle" font-family="Arial, sans-serif">in</text></svg></span>LinkedIn</a>
+        <a href="https://github.com/chandu45-droid" target="_blank" rel="noopener"><span class="footer-icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14"><path d="M9 8L5 12L9 16M15 8L19 12L15 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>GitHub</a>
       </div>
       <p class="footer-note">Chandu Yeswanth — Hyderabad, Telangana, India. Every product on this page was architected and directed end-to-end using Claude Code.</p>
     </footer>
@@ -855,6 +1005,56 @@
     }, { threshold: 0.5 });
 
     statEls.forEach(function (el) { statIo.observe(el); });
+  })();
+
+  /* ---------------------------------------------------------------------
+   * 4. Cursor-spotlight hover glow per project card (--mx/--my custom props)
+   * ------------------------------------------------------------------- */
+  (function () {
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.projects .card'));
+    if (!cards.length) return;
+
+    cards.forEach(function (card) {
+      card.addEventListener('mousemove', function (e) {
+        var rect = card.getBoundingClientRect();
+        card.style.setProperty('--mx', (e.clientX - rect.left) + 'px');
+        card.style.setProperty('--my', (e.clientY - rect.top) + 'px');
+      }, { passive: true });
+    });
+  })();
+
+  /* ---------------------------------------------------------------------
+   * 5. Filter tabs — show/hide project cards by demo type
+   * ------------------------------------------------------------------- */
+  (function () {
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.filter-tab'));
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.projects .card'));
+    if (!tabs.length || !cards.length) return;
+
+    function cardMatches(card, filter) {
+      if (filter === 'all') return true;
+      var hasLive = !!card.querySelector('.pill-live');
+      var hasCode = !!card.querySelector('.pill-code');
+      if (filter === 'live') return hasLive;
+      if (filter === 'code') return hasCode && !hasLive;
+      return true;
+    }
+
+    tabs.forEach(function (tab) {
+      tab.addEventListener('click', function () {
+        tabs.forEach(function (t) {
+          t.classList.remove('is-active');
+          t.setAttribute('aria-pressed', 'false');
+        });
+        tab.classList.add('is-active');
+        tab.setAttribute('aria-pressed', 'true');
+
+        var filter = tab.getAttribute('data-filter');
+        cards.forEach(function (card) {
+          card.classList.toggle('card-hidden', !cardMatches(card, filter));
+        });
+      });
+    });
   })();
   </script>
 
